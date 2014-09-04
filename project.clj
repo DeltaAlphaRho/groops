@@ -1,13 +1,12 @@
 (defproject groops "0.1.0-SNAPSHOT"
   :description "Austin Clojure Meetup groops project"
   :url "https://github.com/AustinClojure/groops"
-
   :dependencies [[org.clojure/clojure "1.6.0"]
 
                  ;; server
                  [cheshire "5.3.1"]
                  [compojure "1.1.8"]
-                 [http-kit "2.1.16"]
+                 [http-kit "2.1.18"]
                  [ring/ring-devel "1.1.8"]
                  [ring/ring-core "1.1.8"]
                  [ring/ring-json "0.3.1"]
@@ -24,11 +23,16 @@
                  ;; dev
                  [org.clojure/tools.nrepl "0.2.3"]
                  [cider/cider-nrepl "0.7.0"]
-                 [cljs-hash "0.0.2"]]
+                 [cljs-hash "0.0.2"]
+
+                 ;; testing
+                 [org.clojure/data.json "0.2.5"]
+                 [http.async.client "0.5.2"]]
 
   :plugins [[com.cemerick/austin "0.1.5"]
             [lein-cljsbuild "1.0.3"]
-            [lein-ring "0.8.8"]]
+            [lein-ring "0.8.8"]
+            [com.cemerick/clojurescript.test "0.3.1"]]
   :resource-paths ["resources"]
   :cljsbuild {:builds
               [{:source-paths ["src-cljs"]
