@@ -84,9 +84,10 @@
 
 (doall (map post-test-message test-messages))
 
-(deftest two-count-message-vect
+(deftest count-message-vect
   (is (= 2 (count (get-message-vect-from-room "Alpha"))))
-  (is (empty? (get-message-vect-from-room "Beta")))
+  ;; messages loaded into Beta froom in async testing
+  (is (= 1 (count (get-message-vect-from-room "Beta"))))
   (is (empty? (get-message-vect-from-room "Gamma")))
   (is (empty? (get-message-vect-from-room "Delta"))))
 

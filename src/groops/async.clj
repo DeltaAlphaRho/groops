@@ -27,9 +27,7 @@
                 (swap! chat-clients dissoc channel)
                 (println channel "disconnected. status: " status)))
     (on-receive channel (fn [data]
-                         (println "on-receive channel:" channel " data:" data)
-                         (swap! chat-clients assoc-in [channel] (read-string data))
-                         (println "chat-ws chat-clients" @chat-clients))))) 
+                         (swap! chat-clients assoc-in [channel] (read-string data)))))) 
 
 (defn send-level []
   (let [level          (int (rand 100))

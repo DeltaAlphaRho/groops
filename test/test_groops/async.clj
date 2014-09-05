@@ -1,6 +1,9 @@
 (ns test-groops.async
   (:require [groops.async :as async]
-            [http.async.client :as http])
+            [groops.server :as server]
+            [http.async.client :as http]
+            [clojure.data.json :as json]
+            [test-groops.api :as api-test :only post-test-message])
   (:use clojure.test
         ring.mock.request)
  )
@@ -9,29 +12,41 @@
   (ns test-groops.async)
   (require '[groops.async :as async])
   (require '[http.async.client :as http])
+  (require '[clojure.data.json :as json])
+  (require '[test-groops.api :as api-test :only post-test-message])
   (use 'clojure.test)
   (use 'ring.mock.request))
 
-(comment
-  (def basic-req (request :get "/"))
+(server/start-webserver)
 
-  (def client (http/create-client))
+(def client (http/create-client))
 
-  (def latch (promise))
+(def received-msg (atom nil))
 
-  (def received-msg (atom nil))
-  (def connection (atom nil))
+(def ws (http/websocket client "ws://localhost:8080/chat-ws"
+                        :text (fn [con msg]
+                                (reset! received-msg msg)
+                                (println "test-groops.async: ws text: connection " con)
+                                (println "test-groops.async: ws text: message " msg))
+                        :close (fn [con status]
+                                 (println "test-groops.async: ws close:" con status))
+                        :open (fn [con]
+                                (println "test-groops.async: ws opened:" con))))
 
-  (def ws (http/websocket client "ws://localhost:8080/chat-ws"
-                          :text (fn [con msg]
-                                  (println "ws text:" con msg))
-                          :close (fn [con status]
-                                   (println "ws close:" con status))
-                          :open (fn [con]
-                                  (println "ws opened:" con))))
+(http/send ws :text (pr-str {:name "Rich Hickey" :email "rich@clojure.com" :room "Beta"}))
 
-  (http/send ws :text (pr-str {:name "Rich Hickey" :email "rich@clojure.com" :room "Alpha"}))
+(deftest websocket-populates-chat-client
+  (let [chat-client (deref async/chat-clients)
+        ws-msg (first (vals chat-client))]
+    (is (> (count chat-client) 0))
+    (is (= "Rich Hickey" (:name ws-msg)))
+    (is (= "rich@clojure.com" (:email ws-msg)))
+    (is (= "Beta" (:room ws-msg)))))
 
+(api-test/post-test-message {:room "Beta" :user "Rich Hickey" :message "You're doing it wrong." :gravatar-url nil})
 
-;;;(def response (http:/GET client "http://localhost:8080/chat-ws"))
-  )
+(deftest websocket-sends-to-client
+  (let [msg-rec (first (vals (json/read-str @received-msg)))]
+    (println "websocket-sends-to-client msg:" )
+    (is (= "Rich Hickey" (get-in  msg-rec ["author"])))
+    (is (= "You're doing it wrong." (get-in msg-rec ["message"])))))

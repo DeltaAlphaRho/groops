@@ -6,7 +6,7 @@
                  ;; server
                  [cheshire "5.3.1"]
                  [compojure "1.1.8"]
-                 [http-kit "2.1.18"]
+                 [http-kit "2.1.16"]
                  [ring/ring-devel "1.1.8"]
                  [ring/ring-core "1.1.8"]
                  [ring/ring-json "0.3.1"]
