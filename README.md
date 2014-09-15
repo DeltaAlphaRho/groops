@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.org/DeltaAlphaRho/groops.svg?branch=master)](https://travis-ci.org/DeltaAlphaRho/groops)
 
+<a href="https://floobits.com/DeltaAlphaRho/DeltaAlphaRho/redirect">
+  <img alt="Floobits status" width="100" height="40" src="https://floobits.com/DeltaAlphaRho/DeltaAlphaRho.png" />
+</a>
+
 groops
 ======
 
